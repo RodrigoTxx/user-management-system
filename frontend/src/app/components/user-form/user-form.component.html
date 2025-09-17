@@ -1,0 +1,167 @@
+<div class="user-form-container">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>{{ getTitle() }}</mat-card-title>
+      <mat-card-subtitle *ngIf="!isSelfEdit">
+        {{ isEditMode ? 'Modificar dados do usuário' : 'Criar novo usuário no sistema' }}
+      </mat-card-subtitle>
+      <mat-card-subtitle *ngIf="isSelfEdit">
+        Edite suas informações pessoais
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <!-- Loading indicator -->
+    <div class="loading-container" *ngIf="loading">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Carregando dados do usuário...</p>
+    </div>
+
+    <mat-card-content *ngIf="!loading">
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
+        
+        <div class="form-row">
+          <!-- Username -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Nome de usuário</mat-label>
+            <input matInput 
+                   formControlName="username" 
+                   placeholder="Digite o nome de usuário"
+                   [readonly]="!canEditUsername()">
+            <mat-error *ngIf="userForm.get('username')?.hasError('required')">
+              Nome de usuário é obrigatório
+            </mat-error>
+            <mat-error *ngIf="userForm.get('username')?.hasError('minlength')">
+              Nome deve ter pelo menos 3 caracteres
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Email -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Email</mat-label>
+            <input matInput 
+                   type="email" 
+                   formControlName="email" 
+                   placeholder="usuario@exemplo.com">
+            <mat-error *ngIf="userForm.get('email')?.hasError('required')">
+              Email é obrigatório
+            </mat-error>
+            <mat-error *ngIf="userForm.get('email')?.hasError('email')">
+              Digite um email válido
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <!-- Full Name -->
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Nome completo</mat-label>
+            <input matInput 
+                   formControlName="fullName" 
+                   placeholder="Digite o nome completo">
+            <mat-error *ngIf="userForm.get('fullName')?.hasError('required')">
+              Nome completo é obrigatório
+            </mat-error>
+            <mat-error *ngIf="userForm.get('fullName')?.hasError('minlength')">
+              Nome deve ter pelo menos 2 caracteres
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <!-- Phone -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Telefone</mat-label>
+            <input matInput 
+                   formControlName="phone" 
+                   placeholder="(11) 99999-9999">
+          </mat-form-field>
+
+          <!-- Profile (only for admin) -->
+          <mat-form-field appearance="outline" class="form-field" *ngIf="canEditProfile()">
+            <mat-label>Perfil</mat-label>
+            <mat-select formControlName="profileId">
+              <mat-option *ngFor="let profile of profiles" [value]="profile.id">
+                {{ profile.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="userForm.get('profileId')?.hasError('required')">
+              Perfil é obrigatório
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Active Status (only for admin editing others) -->
+          <div class="checkbox-container" *ngIf="isAdminMode && !isSelfEdit">
+            <mat-checkbox formControlName="active">
+              Usuário ativo
+            </mat-checkbox>
+          </div>
+        </div>
+
+        <!-- Password Section -->
+        <div class="password-section" *ngIf="!isEditMode || shouldShowPassword()">
+          <div class="password-header" *ngIf="isEditMode">
+            <h4>Alterar Senha</h4>
+            <button type="button" 
+                    mat-button 
+                    color="primary" 
+                    (click)="togglePasswordChange()">
+              {{ userForm.get('password')?.disabled ? 'Alterar senha' : 'Cancelar alteração' }}
+            </button>
+          </div>
+
+          <div class="form-row" *ngIf="!userForm.get('password')?.disabled">
+            <!-- Password -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{ isEditMode ? 'Nova senha' : 'Senha' }}</mat-label>
+              <input matInput 
+                     type="password" 
+                     formControlName="password" 
+                     placeholder="Digite a senha">
+              <mat-error *ngIf="userForm.get('password')?.hasError('required')">
+                Senha é obrigatória
+              </mat-error>
+              <mat-error *ngIf="userForm.get('password')?.hasError('minlength')">
+                Senha deve ter pelo menos 6 caracteres
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Confirm Password -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Confirmar senha</mat-label>
+              <input matInput 
+                     type="password" 
+                     formControlName="confirmPassword" 
+                     placeholder="Confirme a senha">
+              <mat-error *ngIf="userForm.get('confirmPassword')?.hasError('required')">
+                Confirmação de senha é obrigatória
+              </mat-error>
+              <mat-error *ngIf="userForm.get('confirmPassword')?.hasError('passwordMismatch')">
+                Senhas não conferem
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <mat-card-actions class="form-actions">
+          <button type="button" 
+                  mat-button 
+                  (click)="goBack()" 
+                  [disabled]="saving">
+            Cancelar
+          </button>
+          
+          <button type="submit" 
+                  mat-raised-button 
+                  color="primary" 
+                  [disabled]="userForm.invalid || saving">
+            <mat-spinner diameter="20" *ngIf="saving" style="margin-right: 8px;"></mat-spinner>
+            <span *ngIf="isSelfEdit">Salvar Alterações</span>
+            <span *ngIf="!isSelfEdit">{{ isEditMode ? 'Atualizar' : 'Criar' }} Usuário</span>
+          </button>
+        </mat-card-actions>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

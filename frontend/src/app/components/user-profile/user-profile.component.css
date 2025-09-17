@@ -1,0 +1,249 @@
+.profile-container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  gap: 20px;
+}
+
+.loading-container p {
+  color: #666;
+  font-size: 16px;
+}
+
+.error-card {
+  margin-bottom: 20px;
+}
+
+.error-content {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.error-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+}
+
+.error-content h3 {
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.error-content p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Header Card */
+.header-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.header-card .mat-card-header-text {
+  margin: 0;
+}
+
+.header-card .mat-card-title {
+  color: white;
+  font-size: 28px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.header-card .mat-card-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.profile-avatar {
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+}
+
+.profile-avatar mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: white;
+}
+
+.header-actions {
+  padding: 20px 0 0 0;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.header-actions button {
+  border-color: white;
+  color: white;
+}
+
+.header-actions button[mat-raised-button] {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Details Card */
+.details-card {
+  padding: 24px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 32px;
+  margin-top: 20px;
+}
+
+.detail-section h4 {
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f0f0f0;
+  font-weight: 500;
+}
+
+.detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-item mat-icon {
+  margin-top: 4px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: #666;
+}
+
+.detail-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-content label {
+  font-size: 12px;
+  color: #999;
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.detail-content span {
+  font-size: 14px;
+  color: #333;
+  font-weight: 400;
+}
+
+/* Actions Card */
+.actions-card {
+  background-color: #fafafa;
+}
+
+.quick-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  min-width: 140px;
+}
+
+.action-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 12px;
+  }
+  
+  .details-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .header-actions {
+    flex-direction: column;
+  }
+  
+  .header-actions button {
+    width: 100%;
+  }
+  
+  .quick-actions {
+    flex-direction: column;
+  }
+  
+  .action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .detail-item mat-icon {
+    margin-top: 0;
+  }
+}
+
+/* Mat-chip customization */
+mat-chip {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Card hover effects */
+.details-card:hover,
+.actions-card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Button hover effects */
+.action-btn:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+}

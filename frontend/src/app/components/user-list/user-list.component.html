@@ -1,0 +1,145 @@
+<div class="user-list-container">
+  <mat-card class="list-card">
+    <mat-card-header>
+      <mat-card-title>Gerenciamento de Usuários</mat-card-title>
+      <mat-card-subtitle>Lista de todos os usuários do sistema</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Barra de ferramentas -->
+      <div class="toolbar">
+        <div class="search-container">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Buscar usuários</mat-label>
+            <input matInput 
+                   [(ngModel)]="searchQuery" 
+                   (input)="searchUsers()"
+                   (keyup.enter)="searchUsers()"
+                   placeholder="Digite nome, username, email ou perfil">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+          <button mat-raised-button color="primary" (click)="searchUsers()" class="search-btn">
+            Buscar
+          </button>
+          <button mat-button (click)="clearSearch()" *ngIf="searchQuery">
+            Limpar
+          </button>
+        </div>
+
+        <div class="actions">
+          <button mat-raised-button color="accent" (click)="createUser()">
+            <mat-icon>add</mat-icon>
+            Novo Usuário
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading spinner -->
+      <div class="loading-container" *ngIf="loading">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Carregando usuários...</p>
+      </div>
+
+      <!-- Tabela de usuários -->
+      <div class="table-container" *ngIf="!loading">
+        <table mat-table [dataSource]="users" class="users-table">
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let user">{{user.id}}</td>
+          </ng-container>
+
+          <!-- Username Column -->
+          <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef>Username</th>
+            <td mat-cell *matCellDef="let user">{{user.username}}</td>
+          </ng-container>
+
+          <!-- Full Name Column -->
+          <ng-container matColumnDef="fullName">
+            <th mat-header-cell *matHeaderCellDef>Nome Completo</th>
+            <td mat-cell *matCellDef="let user">{{user.fullName || 'N/A'}}</td>
+          </ng-container>
+
+          <!-- Email Column -->
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let user">{{user.email}}</td>
+          </ng-container>
+
+          <!-- Profile Column -->
+          <ng-container matColumnDef="profile">
+            <th mat-header-cell *matHeaderCellDef>Perfil</th>
+            <td mat-cell *matCellDef="let user">
+              <mat-chip [color]="(user.profile?.name || user.profileName) === 'ADMIN' ? 'primary' : 'accent'" selected>
+                {{user.profile?.name || user.profileName || 'N/A'}}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Active Column -->
+          <ng-container matColumnDef="active">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let user">
+              <mat-chip [color]="getStatusColor(user.active)" selected>
+                {{getStatusText(user.active)}}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Created At Column -->
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef>Criado em</th>
+            <td mat-cell *matCellDef="let user">
+              {{user.createdAt | date:'dd/MM/yyyy HH:mm'}}
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Ações</th>
+            <td mat-cell *matCellDef="let user">
+              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Ações">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="viewUser(user)">
+                  <mat-icon>visibility</mat-icon>
+                  <span>Visualizar</span>
+                </button>
+                <button mat-menu-item (click)="editUser(user)">
+                  <mat-icon>edit</mat-icon>
+                  <span>Editar</span>
+                </button>
+                <button mat-menu-item (click)="toggleUserStatus(user)" *ngIf="user.active">
+                  <mat-icon>block</mat-icon>
+                  <span>Desativar</span>
+                </button>
+                <mat-divider></mat-divider>
+                <button mat-menu-item (click)="deleteUser(user)" class="delete-option">
+                  <mat-icon>delete</mat-icon>
+                  <span>Excluir</span>
+                </button>
+              </mat-menu>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <!-- Empty state -->
+        <div class="empty-state" *ngIf="users.length === 0">
+          <mat-icon class="empty-icon">people</mat-icon>
+          <h3>Nenhum usuário encontrado</h3>
+          <p *ngIf="searchQuery">Tente ajustar os termos de busca ou <button mat-button (click)="clearSearch()">limpar filtros</button></p>
+          <p *ngIf="!searchQuery">Comece criando um novo usuário</p>
+          <button mat-raised-button color="primary" (click)="createUser()" *ngIf="!searchQuery">
+            <mat-icon>add</mat-icon>
+            Criar Primeiro Usuário
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

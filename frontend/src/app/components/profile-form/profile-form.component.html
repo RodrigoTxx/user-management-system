@@ -1,0 +1,123 @@
+<div class="profile-form-container">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <div mat-card-avatar class="form-avatar">
+        <mat-icon color="primary">{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
+      </div>
+      <mat-card-title>{{ getTitle() }}</mat-card-title>
+      <mat-card-subtitle>{{ getSubtitle() }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <!-- Loading indicator -->
+    <div class="loading-container" *ngIf="loading">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Carregando dados do perfil...</p>
+    </div>
+
+    <mat-card-content *ngIf="!loading">
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
+        
+        <!-- Info sobre perfis do sistema -->
+        <mat-card class="info-card" *ngIf="isEditMode && isSystemProfile(profileForm.get('name')?.value)">
+          <mat-card-content>
+            <div class="info-content">
+              <mat-icon color="primary">info</mat-icon>
+              <div class="info-text">
+                <strong>Perfil do Sistema</strong>
+                <p>Este é um perfil essencial do sistema. Apenas a descrição pode ser modificada para manter a segurança e integridade da aplicação.</p>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <div class="form-fields">
+          <!-- Profile Name -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Nome do Perfil</mat-label>
+            <input matInput 
+                   formControlName="name" 
+                   (input)="onNameInput()"
+                   placeholder="Ex: MANAGER, SUPERVISOR, OPERATOR"
+                   [readonly]="isEditMode && isSystemProfile(profileForm.get('name')?.value)">
+            <mat-hint *ngIf="!isEditMode">Use apenas letras maiúsculas, números e underscore. Será convertido automaticamente.</mat-hint>
+            <mat-error *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+              {{ getNameErrorMessage() }}
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Profile Description -->
+          <mat-form-field appearance="outline" class="form-field description-field">
+            <mat-label>Descrição</mat-label>
+            <textarea matInput 
+                      formControlName="description" 
+                      placeholder="Descreva as responsabilidades e permissões deste perfil"
+                      rows="4"
+                      maxlength="255"></textarea>
+            <mat-hint align="end">{{ profileForm.get('description')?.value?.length || 0 }}/255</mat-hint>
+            <mat-error *ngIf="profileForm.get('description')?.invalid && profileForm.get('description')?.touched">
+              {{ getDescriptionErrorMessage() }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Preview Card -->
+        <mat-card class="preview-card" *ngIf="profileForm.get('name')?.value">
+          <mat-card-header>
+            <mat-card-title>Pré-visualização</mat-card-title>
+            <mat-card-subtitle>Como o perfil aparecerá no sistema</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="profile-preview">
+              <div class="preview-item">
+                <mat-icon color="primary">group</mat-icon>
+                <div class="preview-content">
+                  <label>Nome do Perfil:</label>
+                  <mat-chip color="primary" selected>
+                    {{ profileForm.get('name')?.value || 'Nome do perfil' }}
+                  </mat-chip>
+                </div>
+              </div>
+              
+              <div class="preview-item" *ngIf="profileForm.get('description')?.value">
+                <mat-icon color="accent">description</mat-icon>
+                <div class="preview-content">
+                  <label>Descrição:</label>
+                  <p>{{ profileForm.get('description')?.value }}</p>
+                </div>
+              </div>
+
+              <div class="preview-item" *ngIf="!profileForm.get('description')?.value">
+                <mat-icon color="warn">info</mat-icon>
+                <div class="preview-content">
+                  <label>Descrição:</label>
+                  <p class="no-description">Nenhuma descrição fornecida</p>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Actions -->
+        <mat-card-actions class="form-actions">
+          <button type="button" 
+                  mat-button 
+                  (click)="goBack()" 
+                  [disabled]="saving">
+            <mat-icon>arrow_back</mat-icon>
+            Cancelar
+          </button>
+          
+          <button type="submit" 
+                  mat-raised-button 
+                  color="primary" 
+                  [disabled]="profileForm.invalid || saving">
+            <mat-spinner diameter="20" *ngIf="saving" class="button-spinner"></mat-spinner>
+            <mat-icon *ngIf="!saving">{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+            {{ isEditMode ? 'Atualizar' : 'Criar' }} Perfil
+          </button>
+        </mat-card-actions>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,29 @@
+<mat-toolbar class="navigation" *ngIf="isLoggedIn">
+  <span>Sistema de Gerenciamento</span>
+  
+  <span class="nav-spacer"></span>
+  
+  <button mat-button (click)="navigateTo('/dashboard')">Dashboard</button>
+  
+  <button mat-button *ngIf="isAdmin" (click)="navigateTo('/admin/users')">Usuários</button>
+  
+  <button mat-button *ngIf="isAdmin" (click)="navigateTo('/admin/profiles')">Perfis</button>
+  
+  <button mat-button (click)="navigateTo('/profile')">Meu Perfil</button>
+  
+  <button mat-button [matMenuTriggerFor]="userMenu">
+    <mat-icon>account_circle</mat-icon>
+    {{ currentUser?.fullName }}
+  </button>
+  
+  <mat-menu #userMenu="matMenu">
+    <button mat-menu-item (click)="navigateTo('/profile')">
+      <mat-icon>person</mat-icon>
+      <span>Meu Perfil</span>
+    </button>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>exit_to_app</mat-icon>
+      <span>Sair</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>

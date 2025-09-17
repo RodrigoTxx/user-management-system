@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+target/
+*.log
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Build outputs
+dist/
+build/
+
+# Railway
+.railway/
+
+# Angular cache (pode ser muito grande)
+frontend/.angular/
+.angular/
+
+# Temporary files
+*.tmp
+*.swp
+*~

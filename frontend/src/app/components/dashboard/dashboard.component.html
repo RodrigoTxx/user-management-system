@@ -1,0 +1,86 @@
+<div class="dashboard-container">
+  <div class="welcome-section">
+    <h1>Bem-vindo, {{ currentUser?.fullName }}!</h1>
+    <p>Perfil: {{ currentUser?.profileName }}</p>
+  </div>
+
+  <!-- Seção de estatísticas para administradores -->
+  <div class="stats-section" *ngIf="isAdmin">
+    <h2>Estatísticas do Sistema</h2>
+    
+    <!-- Loading para estatísticas -->
+    <div class="stats-loading" *ngIf="loading">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Carregando estatísticas...</p>
+    </div>
+    
+    <div class="stats-cards" *ngIf="!loading">
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <mat-card-title>Total de Usuários</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-number">{{ stats.totalUsers }}</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <mat-card-title>Usuários Ativos</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-number active">{{ stats.activeUsers }}</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <mat-card-title>Total de Perfis</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-number">{{ stats.totalProfiles }}</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Ações rápidas -->
+  <div class="actions-section">
+    <h2>Ações Rápidas</h2>
+    <div class="action-cards">
+      <!-- Ações do administrador -->
+      <mat-card class="action-card" *ngIf="isAdmin" (click)="navigateTo('/admin/users')">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>people</mat-icon>
+          <mat-card-title>Gerenciar Usuários</mat-card-title>
+          <mat-card-subtitle>Visualizar e editar usuários do sistema</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+
+      <mat-card class="action-card" *ngIf="isAdmin" (click)="navigateTo('/admin/profiles')">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>assignment_ind</mat-icon>
+          <mat-card-title>Gerenciar Perfis</mat-card-title>
+          <mat-card-subtitle>Criar e editar perfis de acesso</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+
+      <mat-card class="action-card" *ngIf="isAdmin" (click)="navigateTo('/admin/users/new')">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>person_add</mat-icon>
+          <mat-card-title>Novo Usuário</mat-card-title>
+          <mat-card-subtitle>Adicionar novo usuário ao sistema</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+
+      <!-- Ações comuns -->
+      <mat-card class="action-card" (click)="navigateTo('/profile')">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>account_circle</mat-icon>
+          <mat-card-title>Meu Perfil</mat-card-title>
+          <mat-card-subtitle>Visualizar e editar meus dados</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+    </div>
+  </div>
+</div>

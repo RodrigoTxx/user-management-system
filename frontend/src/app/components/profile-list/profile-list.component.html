@@ -1,0 +1,104 @@
+<div class="profile-list-container">
+  <mat-card class="list-card">
+    <mat-card-header>
+      <mat-card-title>Gerenciamento de Perfis</mat-card-title>
+      <mat-card-subtitle>Configure os perfis de acesso do sistema</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="info">
+          <mat-icon>info</mat-icon>
+          <span>Os perfis ADMIN e USER são perfis do sistema e não podem ser excluídos</span>
+        </div>
+        
+        <div class="actions">
+          <button mat-raised-button color="accent" (click)="createProfile()">
+            <mat-icon>add</mat-icon>
+            Novo Perfil
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading spinner -->
+      <div class="loading-container" *ngIf="loading">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Carregando perfis...</p>
+      </div>
+
+      <!-- Profiles table -->
+      <div class="table-container" *ngIf="!loading">
+        <table mat-table [dataSource]="profiles" class="profiles-table">
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let profile">{{profile.id}}</td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Nome</th>
+            <td mat-cell *matCellDef="let profile">
+              <div class="profile-name">
+                <mat-icon [color]="getProfileColor(profile.name)">
+                  {{ getProfileIcon(profile.name) }}
+                </mat-icon>
+                <mat-chip [color]="getProfileColor(profile.name)" selected>
+                  {{ profile.name }}
+                </mat-chip>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Description Column -->
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Descrição</th>
+            <td mat-cell *matCellDef="let profile">
+              <span class="description">{{ profile.description || 'Sem descrição' }}</span>
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Ações</th>
+            <td mat-cell *matCellDef="let profile">
+              <div class="action-buttons">
+                <button mat-icon-button 
+                        color="primary" 
+                        (click)="editProfile(profile)"
+                        [disabled]="!canEdit(profile)"
+                        matTooltip="Editar perfil">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                
+                <button mat-icon-button 
+                        color="warn" 
+                        (click)="deleteProfile(profile)"
+                        [disabled]="!canDelete(profile)"
+                        matTooltip="{{ canDelete(profile) ? 'Excluir perfil' : 'Perfil do sistema não pode ser excluído' }}">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+              [class.system-profile]="row.name === 'ADMIN' || row.name === 'USER'"></tr>
+        </table>
+
+        <!-- Empty state -->
+        <div class="empty-state" *ngIf="profiles.length === 0">
+          <mat-icon class="empty-icon">group</mat-icon>
+          <h3>Nenhum perfil encontrado</h3>
+          <p>Os perfis são necessários para controlar o acesso dos usuários</p>
+          <button mat-raised-button color="primary" (click)="createProfile()">
+            <mat-icon>add</mat-icon>
+            Criar Primeiro Perfil
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

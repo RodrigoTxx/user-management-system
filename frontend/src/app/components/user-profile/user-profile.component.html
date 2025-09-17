@@ -1,0 +1,178 @@
+<div class="profile-container">
+  
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Carregando seu perfil...</p>
+  </div>
+
+  <!-- Error State -->
+  <mat-card class="error-card" *ngIf="error && !loading">
+    <mat-card-content>
+      <div class="error-content">
+        <mat-icon color="warn" class="error-icon">error</mat-icon>
+        <h3>Ops! Algo deu errado</h3>
+        <p>{{ error }}</p>
+        <button mat-raised-button color="primary" (click)="refreshProfile()">
+          <mat-icon>refresh</mat-icon>
+          Tentar Novamente
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Profile Content -->
+  <div class="profile-content" *ngIf="user && !loading && !error">
+    
+    <!-- Header Card -->
+    <mat-card class="header-card">
+      <mat-card-header>
+        <div mat-card-avatar class="profile-avatar">
+          <mat-icon [color]="getProfileColor()">{{ getProfileIcon() }}</mat-icon>
+        </div>
+        <mat-card-title>{{ user.fullName || user.username }}</mat-card-title>
+        <mat-card-subtitle>
+          <mat-chip [color]="getProfileColor()" selected>
+            {{ user.profileName || user.profile?.name }}
+          </mat-chip>
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-actions class="header-actions">
+        <button mat-raised-button color="primary" (click)="editProfile()">
+          <mat-icon>edit</mat-icon>
+          Editar Perfil
+        </button>
+        <button mat-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Voltar
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Details Card -->
+    <mat-card class="details-card">
+      <mat-card-header>
+        <mat-card-title>Informações Pessoais</mat-card-title>
+        <mat-card-subtitle>Seus dados no sistema</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="details-grid">
+          
+          <!-- Basic Information -->
+          <div class="detail-section">
+            <h4>Dados Básicos</h4>
+            
+            <div class="detail-item">
+              <mat-icon>person</mat-icon>
+              <div class="detail-content">
+                <label>Nome de Usuário</label>
+                <span>{{ user.username }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <mat-icon>badge</mat-icon>
+              <div class="detail-content">
+                <label>Nome Completo</label>
+                <span>{{ user.fullName || 'Não informado' }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <mat-icon>email</mat-icon>
+              <div class="detail-content">
+                <label>Email</label>
+                <span>{{ user.email || 'Não informado' }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <mat-icon>phone</mat-icon>
+              <div class="detail-content">
+                <label>Telefone</label>
+                <span>{{ user.phone || 'Não informado' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- System Information -->
+          <div class="detail-section">
+            <h4>Informações do Sistema</h4>
+            
+            <div class="detail-item">
+              <mat-icon [color]="getProfileColor()">{{ getProfileIcon() }}</mat-icon>
+              <div class="detail-content">
+                <label>Perfil de Acesso</label>
+                <span>
+                  <mat-chip [color]="getProfileColor()" selected>
+                    {{ user.profileName || user.profile?.name }}
+                  </mat-chip>
+                </span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <mat-icon [color]="user.active ? 'primary' : 'warn'">
+                {{ user.active ? 'check_circle' : 'cancel' }}
+              </mat-icon>
+              <div class="detail-content">
+                <label>Status da Conta</label>
+                <span>
+                  <mat-chip [color]="user.active ? 'primary' : 'warn'" selected>
+                    {{ user.active ? 'Ativa' : 'Inativa' }}
+                  </mat-chip>
+                </span>
+              </div>
+            </div>
+
+            <div class="detail-item" *ngIf="user.createdAt">
+              <mat-icon>calendar_today</mat-icon>
+              <div class="detail-content">
+                <label>Membro desde</label>
+                <span>{{ formatDate(user.createdAt) }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item" *ngIf="user.updatedAt">
+              <mat-icon>update</mat-icon>
+              <div class="detail-content">
+                <label>Última atualização</label>
+                <span>{{ formatDate(user.updatedAt) }}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Actions Card -->
+    <mat-card class="actions-card">
+      <mat-card-header>
+        <mat-card-title>Ações Rápidas</mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="quick-actions">
+          <button mat-stroked-button color="primary" (click)="editProfile()" class="action-btn">
+            <mat-icon>edit</mat-icon>
+            <span>Editar Dados</span>
+          </button>
+          
+          <button mat-stroked-button color="accent" (click)="refreshProfile()" class="action-btn">
+            <mat-icon>refresh</mat-icon>
+            <span>Atualizar Perfil</span>
+          </button>
+          
+          <button mat-stroked-button (click)="goBack()" class="action-btn">
+            <mat-icon>dashboard</mat-icon>
+            <span>Ir para Dashboard</span>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</div>
