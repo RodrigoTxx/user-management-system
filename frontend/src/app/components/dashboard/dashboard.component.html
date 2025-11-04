@@ -1,7 +1,16 @@
 <div class="dashboard-container">
   <div class="welcome-section">
-    <h1>Bem-vindo à Guilda, Família {{ currentUser?.username }}!</h1>
-    <p>Perfil: {{ currentUser?.profileName }}</p>
+    <div class="guild-header">
+      <div class="guild-logo">
+        <div class="guild-emblem">
+          <span class="guild-symbol">⚔</span>
+        </div>
+      </div>
+      <div class="guild-info">
+        <h1>Bem-vindo à Floating, Família {{ currentUser?.username }}!</h1>
+        <p class="member-rank">{{ currentUser?.profileName }}</p>
+      </div>
+    </div>
   </div>
 
   <!-- Seção de estatísticas para administradores -->

@@ -2,30 +2,80 @@
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  min-height: 100vh;
+  color: #e0e0e0;
 }
 
 .welcome-section {
-  text-align: center;
   margin-bottom: 40px;
 }
 
-.welcome-section h1 {
-  color: #3f51b5;
-  margin-bottom: 8px;
+.guild-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 30px;
+  background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+  border-radius: 15px;
+  border: 2px solid #444;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
 }
 
-.welcome-section p {
-  color: #666;
-  font-size: 16px;
+.guild-logo {
+  position: relative;
+}
+
+.guild-emblem {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #d4af37;
+  background: linear-gradient(45deg, #d4af37, #ffd700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+}
+
+.guild-symbol {
+  font-size: 45px;
+  color: #1a1a1a;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  font-weight: bold;
+}
+
+.guild-info h1 {
+  color: #d4af37;
+  margin-bottom: 8px;
+  font-family: 'Cinzel', serif;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  font-size: 2.2em;
+}
+
+.member-rank {
+  color: #b8860b;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .stats-section {
   margin-bottom: 40px;
+  background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+  border-radius: 15px;
+  padding: 25px;
+  border: 1px solid #444;
 }
 
 .stats-section h2 {
-  color: #333;
+  color: #d4af37;
   margin-bottom: 20px;
+  font-family: 'Cinzel', serif;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
 }
 
 .stats-loading {
@@ -37,7 +87,7 @@
 }
 
 .stats-loading p {
-  color: #666;
+  color: #b0b0b0;
   margin: 0;
 }
 
@@ -51,21 +101,40 @@
 .stat-card {
   text-align: center;
   padding: 20px;
+  background: linear-gradient(145deg, #333, #222);
+  border: 1px solid #555;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.stat-card mat-card-header mat-card-title {
+  color: #d4af37;
+  font-weight: 600;
 }
 
 .stat-number {
   font-size: 2.5em;
   font-weight: bold;
-  color: #3f51b5;
+  color: #ffd700;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
 }
 
 .stat-number.active {
-  color: #4caf50;
+  color: #90ee90;
+}
+
+.actions-section {
+  background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+  border-radius: 15px;
+  padding: 25px;
+  border: 1px solid #444;
 }
 
 .actions-section h2 {
-  color: #333;
+  color: #d4af37;
   margin-bottom: 20px;
+  font-family: 'Cinzel', serif;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
 }
 
 .action-cards {
@@ -76,27 +145,93 @@
 
 .action-card {
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.3s, box-shadow 0.3s;
+  background: linear-gradient(145deg, #333, #222);
+  border: 1px solid #555;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .action-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  transform: translateY(-6px);
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+  border-color: #d4af37;
+}
+
+.action-card mat-card-header mat-card-title {
+  color: #e0e0e0;
+  font-weight: 600;
+}
+
+.action-card mat-card-header mat-card-subtitle {
+  color: #b0b0b0;
 }
 
 .action-card mat-icon {
-  background-color: #3f51b5;
-  color: white;
+  background: linear-gradient(45deg, #d4af37, #ffd700);
+  color: #1a1a1a;
   border-radius: 50%;
-  padding: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
+
+/* Importar fonte medieval/fantasia */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
 
 @media (max-width: 768px) {
   .dashboard-container {
     padding: 10px;
   }
   
+  .guild-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+    padding: 20px;
+  }
+  
+  .guild-info h1 {
+    font-size: 1.8em;
+  }
+  
   .stats-cards, .action-cards {
     grid-template-columns: 1fr;
+  }
+  
+  .stats-section, .actions-section {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+}
+
+/* Efeitos de brilho para elementos dourados */
+.guild-info h1,
+.stats-section h2,
+.actions-section h2 {
+  animation: subtle-glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes subtle-glow {
+  from {
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(212, 175, 55, 0.3);
+  }
+  to {
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 20px rgba(212, 175, 55, 0.5);
+  }
+}
+
+/* Animação para a logo da guilda */
+.guild-emblem {
+  animation: gentle-pulse 4s ease-in-out infinite;
+}
+
+@keyframes gentle-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(212, 175, 55, 0);
   }
 }
