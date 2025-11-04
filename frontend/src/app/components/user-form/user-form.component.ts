@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { User } from '../../models/user.model';
+import { User, BDO_CLASSES, BDOClass, calculateGearScore, getAvailableTypesForClass } from '../../models/user.model';
 import { Profile } from '../../models/profile.model';
 import { UserService } from '../../services/user.service';
 import { ProfileService } from '../../services/profile.service';
@@ -23,6 +23,10 @@ export class UserFormComponent implements OnInit {
   loading = false;
   saving = false;
   currentUser: any;
+  
+  // Black Desert Online data
+  bdoClasses: BDOClass[] = BDO_CLASSES;
+  calculatedGearScore = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -44,18 +48,26 @@ export class UserFormComponent implements OnInit {
     if (this.isEditMode) {
       this.loadUser();
     }
+    
+    // Calculate initial gear score
+    this.onPowerChange();
   }
 
   private createForm(): FormGroup {
     return this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      fullName: ['', [Validators.required, Validators.minLength(2)]],
-      phone: [''],
+      characterName: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.minLength(6)]],
       confirmPassword: [''],
       profileId: ['', Validators.required],
-      active: [true]
+      active: [true],
+      
+      // Black Desert Online fields
+      attackPower: [0, [Validators.min(0), Validators.max(500)]],
+      awakeningAttackPower: [0, [Validators.min(0), Validators.max(500)]],
+      defensePower: [0, [Validators.min(0), Validators.max(500)]],
+      characterClass: [''],
+      classType: ['']
     }, { validators: this.passwordMatchValidator });
   }
 
@@ -83,7 +95,7 @@ export class UserFormComponent implements OnInit {
       this.isSelfEdit = true;
       this.userId = null; // Will be loaded from current user
     } else {
-      this.route.params.subscribe(params => {
+      this.route.params.subscribe((params: { [x: string]: string | number; }) => {
         if (params['id']) {
           this.userId = +params['id'];
           this.isEditMode = true;
@@ -111,10 +123,10 @@ export class UserFormComponent implements OnInit {
 
   private loadProfiles(): void {
     this.profileService.getAllProfiles().subscribe({
-      next: (profiles) => {
+      next: (profiles: Profile[]) => {
         this.profiles = profiles;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Erro ao carregar perfis:', error);
         this.snackBar.open('Erro ao carregar perfis', 'Fechar', { duration: 3000 });
       }
@@ -127,12 +139,12 @@ export class UserFormComponent implements OnInit {
     // If it's self-edit, load own profile
     if (this.isSelfEdit) {
       this.userService.getMyProfile().subscribe({
-        next: (user) => {
+        next: (user: any) => {
           this.userId = user.id || null;
           this.populateForm(user);
           this.loading = false;
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Erro ao carregar próprio perfil:', error);
           this.snackBar.open('Erro ao carregar perfil', 'Fechar', { duration: 3000 });
           this.loading = false;
@@ -142,11 +154,11 @@ export class UserFormComponent implements OnInit {
     } else if (this.userId) {
       // Load specific user by ID
       this.userService.getUserById(this.userId).subscribe({
-        next: (user) => {
+        next: (user: any) => {
           this.populateForm(user);
           this.loading = false;
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Erro ao carregar usuário:', error);
           this.snackBar.open('Erro ao carregar usuário', 'Fechar', { duration: 3000 });
           this.loading = false;
@@ -159,12 +171,20 @@ export class UserFormComponent implements OnInit {
   private populateForm(user: any): void {
     this.userForm.patchValue({
       username: user.username,
-      email: user.email,
-      fullName: user.fullName,
-      phone: user.phone,
+      characterName: user.characterName,
       profileId: user.profile?.id || user.profileId, // Suporte para ambos os formatos
-      active: user.active
+      active: user.active,
+      
+      // Black Desert Online fields
+      attackPower: user.attackPower || 0,
+      awakeningAttackPower: user.awakeningAttackPower || 0,
+      defensePower: user.defensePower || 0,
+      characterClass: user.characterClass || '',
+      classType: user.classType || ''
     });
+    
+    // Calculate gear score after populating form
+    this.onPowerChange();
   }
 
   onSubmit(): void {
@@ -179,11 +199,16 @@ export class UserFormComponent implements OnInit {
     // Prepare user data
     const userData = {
       username: formValue.username,
-      email: formValue.email,
-      fullName: formValue.fullName,
-      phone: formValue.phone,
+      characterName: formValue.characterName,
       profileId: formValue.profileId,
-      active: formValue.active
+      active: formValue.active,
+      
+      // Black Desert Online fields
+      attackPower: formValue.attackPower || 0,
+      awakeningAttackPower: formValue.awakeningAttackPower || 0,
+      defensePower: formValue.defensePower || 0,
+      characterClass: formValue.characterClass || '',
+      classType: formValue.classType || ''
     };
 
     // Add password only if provided
@@ -200,12 +225,12 @@ export class UserFormComponent implements OnInit {
 
   private createUser(userData: any): void {
     this.userService.createUser(userData).subscribe({
-      next: (user) => {
+      next: (user: any) => {
         this.snackBar.open('Usuário criado com sucesso!', 'Fechar', { duration: 3000 });
         this.saving = false;
         this.goBack();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Erro ao criar usuário:', error);
         this.snackBar.open('Erro ao criar usuário', 'Fechar', { duration: 3000 });
         this.saving = false;
@@ -217,12 +242,12 @@ export class UserFormComponent implements OnInit {
     if (this.isSelfEdit) {
       // Use endpoint específico para auto-edição
       this.userService.updateMyProfile(userData).subscribe({
-        next: (user) => {
+        next: (user: any) => {
           this.snackBar.open('Perfil atualizado com sucesso!', 'Fechar', { duration: 3000 });
           this.saving = false;
           this.goBack();
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Erro ao atualizar perfil:', error);
           this.snackBar.open('Erro ao atualizar perfil', 'Fechar', { duration: 3000 });
           this.saving = false;
@@ -231,12 +256,12 @@ export class UserFormComponent implements OnInit {
     } else {
       // Use endpoint de admin para editar outros usuários
       this.userService.updateUser(this.userId!, userData).subscribe({
-        next: (user) => {
+        next: (user: any) => {
           this.snackBar.open('Usuário atualizado com sucesso!', 'Fechar', { duration: 3000 });
           this.saving = false;
           this.goBack();
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Erro ao atualizar usuário:', error);
           this.snackBar.open('Erro ao atualizar usuário', 'Fechar', { duration: 3000 });
           this.saving = false;
@@ -304,5 +329,31 @@ export class UserFormComponent implements OnInit {
     
     passwordControl?.updateValueAndValidity();
     confirmPasswordControl?.updateValueAndValidity();
+  }
+
+  // Black Desert Online specific methods
+  onPowerChange(): void {
+    const ap = this.userForm.get('attackPower')?.value || 0;
+    const app = this.userForm.get('awakeningAttackPower')?.value || 0;
+    const dp = this.userForm.get('defensePower')?.value || 0;
+    
+    this.calculatedGearScore = calculateGearScore(ap, app, dp);
+  }
+
+  onClassChange(className: string): void {
+    // Reset class type when class changes
+    this.userForm.get('classType')?.setValue('');
+    
+    // Update available class types
+    const availableTypes = this.getAvailableClassTypes();
+    if (availableTypes.length === 1) {
+      // Auto-select if only one option
+      this.userForm.get('classType')?.setValue(availableTypes[0]);
+    }
+  }
+
+  getAvailableClassTypes(): string[] {
+    const selectedClass = this.userForm.get('characterClass')?.value;
+    return selectedClass ? getAvailableTypesForClass(selectedClass) : [];
   }
 }

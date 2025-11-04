@@ -15,27 +15,39 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotBlank(message = "Nome de usuário é obrigatório")
-    @Size(min = 3, max = 50, message = "Nome de usuário deve ter entre 3 e 50 caracteres")
+    @NotBlank(message = "Nome de família é obrigatório")
+    @Size(min = 3, max = 50, message = "Nome de família deve ter entre 3 e 50 caracteres")
     @Column(unique = true, nullable = false)
-    private String username;
-    
-    @NotBlank(message = "Email é obrigatório")
-    @Email(message = "Email deve ter formato válido")
-    @Column(unique = true, nullable = false)
-    private String email;
+    private String username; // Nome de Família
     
     @NotBlank(message = "Senha é obrigatória")
     @Size(min = 6, message = "Senha deve ter pelo menos 6 caracteres")
     @JsonIgnore
     private String password;
     
-    @NotBlank(message = "Nome completo é obrigatório")
-    @Size(max = 100, message = "Nome completo deve ter no máximo 100 caracteres")
-    private String fullName;
+    @NotBlank(message = "Nome do personagem é obrigatório")
+    @Size(min = 3, max = 50, message = "Nome do personagem deve ter entre 3 e 50 caracteres")
+    @Column(nullable = false)
+    private String characterName;
     
-    @Size(max = 15, message = "Telefone deve ter no máximo 15 caracteres")
-    private String phone;
+    // Campos específicos do Black Desert Online
+    @Column(name = "attack_power")
+    private Integer attackPower = 0; // AP
+    
+    @Column(name = "awakening_attack_power")
+    private Integer awakeningAttackPower = 0; // APP
+    
+    @Column(name = "defense_power")
+    private Integer defensePower = 0; // DP
+    
+    @Column(name = "gear_score")
+    private Integer gearScore = 0; // GS - calculado automaticamente
+    
+    @Size(max = 50, message = "Classe deve ter no máximo 50 caracteres")
+    private String characterClass;
+    
+    @Size(max = 20, message = "Tipo da classe deve ter no máximo 20 caracteres")
+    private String classType; // Awakening, Succession, Ascension
     
     @Column(nullable = false)
     private Boolean active = true;
@@ -52,23 +64,34 @@ public class User {
     // Constructors
     public User() {}
     
-    public User(String username, String email, String password, String fullName, Profile profile) {
+    public User(String username, String password, String characterName, Profile profile) {
         this.username = username;
-        this.email = email;
         this.password = password;
-        this.fullName = fullName;
+        this.characterName = characterName;
         this.profile = profile;
+        calculateGearScore();
     }
     
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+        calculateGearScore();
     }
     
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+        calculateGearScore();
+    }
+    
+    // Método para calcular automaticamente o Gear Score: (AP + AAP) / 2 + DP
+    public void calculateGearScore() {
+        if (this.attackPower == null) this.attackPower = 0;
+        if (this.awakeningAttackPower == null) this.awakeningAttackPower = 0;
+        if (this.defensePower == null) this.defensePower = 0;
+        
+        this.gearScore = (this.attackPower + this.awakeningAttackPower) / 2 + this.defensePower;
     }
     
     // Getters and Setters
@@ -88,36 +111,12 @@ public class User {
         this.username = username;
     }
     
-    public String getEmail() {
-        return email;
-    }
-    
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    
     public String getPassword() {
         return password;
     }
     
     public void setPassword(String password) {
         this.password = password;
-    }
-    
-    public String getFullName() {
-        return fullName;
-    }
-    
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-    
-    public String getPhone() {
-        return phone;
-    }
-    
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
     
     public Boolean getActive() {
@@ -152,13 +151,75 @@ public class User {
         this.profile = profile;
     }
     
+    public String getCharacterName() {
+        return characterName;
+    }
+    
+    public void setCharacterName(String characterName) {
+        this.characterName = characterName;
+    }
+    
+    public Integer getAttackPower() {
+        return attackPower;
+    }
+    
+    public void setAttackPower(Integer attackPower) {
+        this.attackPower = attackPower;
+        calculateGearScore();
+    }
+    
+    public Integer getAwakeningAttackPower() {
+        return awakeningAttackPower;
+    }
+    
+    public void setAwakeningAttackPower(Integer awakeningAttackPower) {
+        this.awakeningAttackPower = awakeningAttackPower;
+        calculateGearScore();
+    }
+    
+    public Integer getDefensePower() {
+        return defensePower;
+    }
+    
+    public void setDefensePower(Integer defensePower) {
+        this.defensePower = defensePower;
+        calculateGearScore();
+    }
+    
+    public Integer getGearScore() {
+        return gearScore;
+    }
+    
+    public void setGearScore(Integer gearScore) {
+        // GS é calculado automaticamente, mas mantemos o setter para JPA
+        this.gearScore = gearScore;
+    }
+    
+    public String getCharacterClass() {
+        return characterClass;
+    }
+    
+    public void setCharacterClass(String characterClass) {
+        this.characterClass = characterClass;
+    }
+    
+    public String getClassType() {
+        return classType;
+    }
+    
+    public void setClassType(String classType) {
+        this.classType = classType;
+    }
+    
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", fullName='" + fullName + '\'' +
+                ", characterName='" + characterName + '\'' +
+                ", characterClass='" + characterClass + '\'' +
+                ", classType='" + classType + '\'' +
+                ", gearScore=" + gearScore +
                 ", active=" + active +
                 ", profile=" + (profile != null ? profile.getName() : null) +
                 '}';

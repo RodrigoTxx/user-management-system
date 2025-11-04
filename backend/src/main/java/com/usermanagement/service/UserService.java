@@ -50,12 +50,7 @@ public class UserService {
     public UserDto createUser(CreateUserDto createUserDto) {
         // Verificar se username já existe
         if (userRepository.existsByUsername(createUserDto.getUsername())) {
-            throw new RuntimeException("Nome de usuário já existe");
-        }
-        
-        // Verificar se email já existe
-        if (userRepository.existsByEmail(createUserDto.getEmail())) {
-            throw new RuntimeException("Email já existe");
+            throw new RuntimeException("Nome de família já existe");
         }
         
         // Buscar o perfil
@@ -65,12 +60,17 @@ public class UserService {
         // Criar novo usuário
         User user = new User();
         user.setUsername(createUserDto.getUsername());
-        user.setEmail(createUserDto.getEmail());
         user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
-        user.setFullName(createUserDto.getFullName());
-        user.setPhone(createUserDto.getPhone());
+        user.setCharacterName(createUserDto.getCharacterName());
         user.setProfile(profile);
         user.setActive(true);
+        
+        // Campos específicos do Black Desert Online
+        user.setAttackPower(createUserDto.getAttackPower() != null ? createUserDto.getAttackPower() : 0);
+        user.setAwakeningAttackPower(createUserDto.getAwakeningAttackPower() != null ? createUserDto.getAwakeningAttackPower() : 0);
+        user.setDefensePower(createUserDto.getDefensePower() != null ? createUserDto.getDefensePower() : 0);
+        user.setCharacterClass(createUserDto.getCharacterClass());
+        user.setClassType(createUserDto.getClassType());
         
         User savedUser = userRepository.save(user);
         return convertToDto(savedUser);
@@ -83,21 +83,20 @@ public class UserService {
         // Verificar se username já existe em outro usuário
         if (!user.getUsername().equals(userDto.getUsername()) && 
             userRepository.existsByUsername(userDto.getUsername())) {
-            throw new RuntimeException("Nome de usuário já existe");
-        }
-        
-        // Verificar se email já existe em outro usuário
-        if (!user.getEmail().equals(userDto.getEmail()) && 
-            userRepository.existsByEmail(userDto.getEmail())) {
-            throw new RuntimeException("Email já existe");
+            throw new RuntimeException("Nome de família já existe");
         }
         
         // Atualizar dados
         user.setUsername(userDto.getUsername());
-        user.setEmail(userDto.getEmail());
-        user.setFullName(userDto.getFullName());
-        user.setPhone(userDto.getPhone());
+        user.setCharacterName(userDto.getCharacterName());
         user.setActive(userDto.getActive());
+        
+        // Atualizar campos específicos do Black Desert Online
+        user.setAttackPower(userDto.getAttackPower() != null ? userDto.getAttackPower() : 0);
+        user.setAwakeningAttackPower(userDto.getAwakeningAttackPower() != null ? userDto.getAwakeningAttackPower() : 0);
+        user.setDefensePower(userDto.getDefensePower() != null ? userDto.getDefensePower() : 0);
+        user.setCharacterClass(userDto.getCharacterClass());
+        user.setClassType(userDto.getClassType());
         
         // Atualizar perfil se necessário
         if (userDto.getProfileId() != null && 
@@ -116,16 +115,14 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
         
         // Usuário comum só pode editar seus próprios dados, menos o perfil
-        user.setFullName(userDto.getFullName());
-        user.setPhone(userDto.getPhone());
+        user.setCharacterName(userDto.getCharacterName());
         
-        // Verificar email apenas se foi alterado
-        if (!user.getEmail().equals(userDto.getEmail())) {
-            if (userRepository.existsByEmail(userDto.getEmail())) {
-                throw new RuntimeException("Email já existe");
-            }
-            user.setEmail(userDto.getEmail());
-        }
+        // Atualizar campos específicos do Black Desert Online
+        user.setAttackPower(userDto.getAttackPower() != null ? userDto.getAttackPower() : 0);
+        user.setAwakeningAttackPower(userDto.getAwakeningAttackPower() != null ? userDto.getAwakeningAttackPower() : 0);
+        user.setDefensePower(userDto.getDefensePower() != null ? userDto.getDefensePower() : 0);
+        user.setCharacterClass(userDto.getCharacterClass());
+        user.setClassType(userDto.getClassType());
         
         User updatedUser = userRepository.save(user);
         return convertToDto(updatedUser);
@@ -162,12 +159,19 @@ public class UserService {
         UserDto dto = new UserDto();
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
-        dto.setEmail(user.getEmail());
-        dto.setFullName(user.getFullName());
-        dto.setPhone(user.getPhone());
+        dto.setCharacterName(user.getCharacterName());
         dto.setActive(user.getActive());
         dto.setProfileId(user.getProfile().getId());
         dto.setProfileName(user.getProfile().getName());
+        
+        // Campos específicos do Black Desert Online
+        dto.setAttackPower(user.getAttackPower() != null ? user.getAttackPower() : 0);
+        dto.setAwakeningAttackPower(user.getAwakeningAttackPower() != null ? user.getAwakeningAttackPower() : 0);
+        dto.setDefensePower(user.getDefensePower() != null ? user.getDefensePower() : 0);
+        dto.setGearScore(user.getGearScore() != null ? user.getGearScore() : 0);
+        dto.setCharacterClass(user.getCharacterClass());
+        dto.setClassType(user.getClassType());
+        
         return dto;
     }
 }

@@ -37,26 +37,28 @@ export class UserProfileComponent implements OnInit {
     this.loading = true;
     
     this.userService.getMyProfile().subscribe({
-      next: (user) => {
+      next: (user: User | null) => {
         this.user = user;
         this.loading = false;
       },
-      error: (error) => {        
+      error: (error: any) => {        
         if (currentUser.id) {
           this.userService.getUserById(currentUser.id).subscribe({
-            next: (user) => {
+            next: (user: User | null) => {
               this.user = user;
               this.loading = false;
             },
-            error: (error) => {              
+            error: (error: any) => {              
               this.user = {
                 username: currentUser.username,
-                email: currentUser.email || '',
-                fullName: currentUser.fullName || currentUser.username,
-                phone: currentUser.phone || '',
+                characterName: currentUser.characterName || currentUser.username,
                 active: true,
                 profileId: 0,
-                profileName: currentUser.profileName
+                profileName: currentUser.profileName,
+                attackPower: 0,
+                awakeningAttackPower: 0,
+                defensePower: 0,
+                gearScore: 0
               } as User;
               this.loading = false;
             }
@@ -64,12 +66,14 @@ export class UserProfileComponent implements OnInit {
         } else {          
           this.user = {
             username: currentUser.username,
-            email: currentUser.email || '',
-            fullName: currentUser.fullName || currentUser.username,
-            phone: currentUser.phone || '',
+            characterName: currentUser.characterName || currentUser.username,
             active: true,
             profileId: 0,
-            profileName: currentUser.profileName
+            profileName: currentUser.profileName,
+            attackPower: 0,
+            awakeningAttackPower: 0,
+            defensePower: 0,
+            gearScore: 0
           } as User;
           this.loading = false;
         }
@@ -113,5 +117,12 @@ export class UserProfileComponent implements OnInit {
   refreshProfile(): void {
     this.loadUserProfile();
     this.snackBar.open('Perfil atualizado!', 'Fechar', { duration: 2000 });
+  }
+
+  getGearScoreColor(gearScore: number): string {
+    if (gearScore >= 830) return 'primary'; // Altíssimo
+    if (gearScore >= 800) return 'accent';  // Alto
+    if (gearScore >= 790) return 'basic';   // Médio
+    return 'warn';                          // Baixo
   }
 }

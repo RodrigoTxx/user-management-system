@@ -30,7 +30,7 @@
         <div mat-card-avatar class="profile-avatar">
           <mat-icon [color]="getProfileColor()">{{ getProfileIcon() }}</mat-icon>
         </div>
-        <mat-card-title>{{ user.fullName || user.username }}</mat-card-title>
+        <mat-card-title>{{ user.characterName || user.username }}</mat-card-title>
         <mat-card-subtitle>
           <mat-chip [color]="getProfileColor()" selected>
             {{ user.profileName || user.profile?.name }}
@@ -62,7 +62,7 @@
           
           <!-- Basic Information -->
           <div class="detail-section">
-            <h4>Dados Básicos</h4>
+            <h4>Informações do Personagem</h4>
             
             <div class="detail-item">
               <mat-icon>person</mat-icon>
@@ -73,26 +73,32 @@
             </div>
 
             <div class="detail-item">
-              <mat-icon>badge</mat-icon>
+              <mat-icon>videogame_asset</mat-icon>
               <div class="detail-content">
-                <label>Nome Completo</label>
-                <span>{{ user.fullName || 'Não informado' }}</span>
+                <label>Nome do Personagem</label>
+                <span>{{ user.characterName || 'Não informado' }}</span>
               </div>
             </div>
 
-            <div class="detail-item">
-              <mat-icon>email</mat-icon>
+            <div class="detail-item" *ngIf="user.characterClass">
+              <mat-icon>stars</mat-icon>
               <div class="detail-content">
-                <label>Email</label>
-                <span>{{ user.email || 'Não informado' }}</span>
+                <label>Classe do Personagem</label>
+                <span>{{ user.characterClass }}
+                  <small *ngIf="user.classType"> ({{ user.classType }})</small>
+                </span>
               </div>
             </div>
 
-            <div class="detail-item">
-              <mat-icon>phone</mat-icon>
+            <div class="detail-item" *ngIf="user.gearScore">
+              <mat-icon>military_tech</mat-icon>
               <div class="detail-content">
-                <label>Telefone</label>
-                <span>{{ user.phone || 'Não informado' }}</span>
+                <label>Gear Score</label>
+                <span>
+                  <mat-chip [color]="getGearScoreColor(user.gearScore)" selected>
+                    {{ user.gearScore }}
+                  </mat-chip>
+                </span>
               </div>
             </div>
           </div>

@@ -15,11 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
     Optional<User> findByUsername(String username);
     
-    Optional<User> findByEmail(String email);
-    
     boolean existsByUsername(String username);
-    
-    boolean existsByEmail(String email);
     
     List<User> findByProfile(Profile profile);
     
@@ -29,7 +25,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.profile.name = :profileName")
     List<User> findByProfileName(@Param("profileName") String profileName);
     
-    @Query("SELECT u FROM User u WHERE u.fullName LIKE %:name% OR u.username LIKE %:name%")
+    @Query("SELECT u FROM User u WHERE u.characterName LIKE %:name% OR u.username LIKE %:name%")
     List<User> findByNameContaining(@Param("name") String name);
     
 }

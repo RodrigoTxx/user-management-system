@@ -15,7 +15,7 @@
                    [(ngModel)]="searchQuery" 
                    (input)="searchUsers()"
                    (keyup.enter)="searchUsers()"
-                   placeholder="Digite nome, username, email ou perfil">
+                   placeholder="Digite família, personagem, classe ou perfil">
             <mat-icon matSuffix>search</mat-icon>
           </mat-form-field>
           <button mat-raised-button color="primary" (click)="searchUsers()" class="search-btn">
@@ -49,22 +49,40 @@
             <td mat-cell *matCellDef="let user">{{user.id}}</td>
           </ng-container>
 
-          <!-- Username Column -->
+          <!-- Family Name Column -->
           <ng-container matColumnDef="username">
-            <th mat-header-cell *matHeaderCellDef>Username</th>
+            <th mat-header-cell *matHeaderCellDef>Nome de Família</th>
             <td mat-cell *matCellDef="let user">{{user.username}}</td>
           </ng-container>
 
-          <!-- Full Name Column -->
-          <ng-container matColumnDef="fullName">
-            <th mat-header-cell *matHeaderCellDef>Nome Completo</th>
-            <td mat-cell *matCellDef="let user">{{user.fullName || 'N/A'}}</td>
+          <!-- Character Name Column -->
+          <ng-container matColumnDef="characterName">
+            <th mat-header-cell *matHeaderCellDef>Personagem</th>
+            <td mat-cell *matCellDef="let user">{{user.characterName || 'N/A'}}</td>
           </ng-container>
 
-          <!-- Email Column -->
-          <ng-container matColumnDef="email">
-            <th mat-header-cell *matHeaderCellDef>Email</th>
-            <td mat-cell *matCellDef="let user">{{user.email}}</td>
+
+
+          <!-- Character Class Column -->
+          <ng-container matColumnDef="characterClass">
+            <th mat-header-cell *matHeaderCellDef>Classe</th>
+            <td mat-cell *matCellDef="let user">
+              <span class="class-info" *ngIf="user.characterClass">
+                {{user.characterClass}}
+                <small *ngIf="user.classType">({{user.classType}})</small>
+              </span>
+              <span *ngIf="!user.characterClass">N/A</span>
+            </td>
+          </ng-container>
+
+          <!-- Gear Score Column -->
+          <ng-container matColumnDef="gearScore">
+            <th mat-header-cell *matHeaderCellDef>GS</th>
+            <td mat-cell *matCellDef="let user">
+              <mat-chip [color]="getGearScoreColor(user.gearScore || 0)" selected>
+                {{user.gearScore || 0}}
+              </mat-chip>
+            </td>
           </ng-container>
 
           <!-- Profile Column -->

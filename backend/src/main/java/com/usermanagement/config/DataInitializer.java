@@ -36,24 +36,34 @@ public class DataInitializer implements CommandLineRunner {
             if (userRepository.count() == 0) {
                 User adminUser = new User();
                 adminUser.setUsername("admin");
-                adminUser.setEmail("admin@sistema.com");
                 adminUser.setPassword(passwordEncoder.encode("admin123"));
-                adminUser.setFullName("Administrador do Sistema");
-                adminUser.setPhone("(11) 99999-9999");
+                adminUser.setCharacterName("AdminChar");
                 adminUser.setProfile(adminProfile);
                 adminUser.setActive(true);
+                
+                // Campos específicos do Black Desert Online para admin
+                adminUser.setAttackPower(280);
+                adminUser.setAwakeningAttackPower(350);
+                adminUser.setDefensePower(380);
+                adminUser.setCharacterClass("Warrior");
+                adminUser.setClassType("Awakening");
                 
                 userRepository.save(adminUser);
                 
                 // Criar um usuário comum de exemplo
                 User commonUser = new User();
                 commonUser.setUsername("user");
-                commonUser.setEmail("user@sistema.com");
                 commonUser.setPassword(passwordEncoder.encode("user123"));
-                commonUser.setFullName("Usuário Comum");
-                commonUser.setPhone("(11) 88888-8888");
+                commonUser.setCharacterName("PlayerOne");
                 commonUser.setProfile(userProfile);
                 commonUser.setActive(true);
+                
+                // Campos específicos do Black Desert Online para user
+                commonUser.setAttackPower(250);
+                commonUser.setAwakeningAttackPower(320);
+                commonUser.setDefensePower(340);
+                commonUser.setCharacterClass("Sorceress");
+                commonUser.setClassType("Succession");
                 
                 userRepository.save(commonUser);
                 

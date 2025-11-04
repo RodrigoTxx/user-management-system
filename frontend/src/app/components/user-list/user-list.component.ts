@@ -14,7 +14,7 @@ import { AuthService } from '../../services/auth.service';
 export class UserListComponent implements OnInit {
   users: User[] = [];
   allUsers: User[] = [];
-  displayedColumns: string[] = ['id', 'username', 'fullName', 'email', 'profile', 'active', 'createdAt', 'actions'];
+  displayedColumns: string[] = [ 'username', 'characterName', 'characterClass', 'gearScore', 'profile', 'active', 'actions'];
   searchQuery: string = '';
   loading = false;
 
@@ -33,12 +33,12 @@ export class UserListComponent implements OnInit {
   loadUsers(): void {
     this.loading = true;
     this.userService.getAllUsers().subscribe({
-      next: (users) => {
+      next: (users: User[]) => {
         this.allUsers = users;
         this.users = users;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Erro ao carregar usuários:', error);
         this.snackBar.open('Erro ao carregar usuários', 'Fechar', { duration: 3000 });
         this.loading = false;
@@ -52,19 +52,19 @@ export class UserListComponent implements OnInit {
     if (query) {
       this.users = this.allUsers.filter(user => 
         user.username?.toLowerCase().includes(query) ||
-        user.fullName?.toLowerCase().includes(query) ||
-        user.email?.toLowerCase().includes(query) ||
+        user.characterName?.toLowerCase().includes(query) ||
+        user.characterClass?.toLowerCase().includes(query) ||
         user.profileName?.toLowerCase().includes(query)
       );
       
       if (this.users.length === 0 && this.allUsers.length > 0) {
         this.loading = true;
         this.userService.searchUsers(this.searchQuery).subscribe({
-          next: (users) => {
+          next: (users: User[]) => {
             this.users = users;
             this.loading = false;
           },
-          error: (error) => {
+          error: (error: any) => {
             console.error('Erro na busca:', error);
             this.snackBar.open('Erro na busca de usuários', 'Fechar', { duration: 3000 });
             this.users = [];
@@ -104,7 +104,7 @@ export class UserListComponent implements OnInit {
             setTimeout(() => this.searchUsers(), 100);
           }
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Erro ao desativar usuário:', error);
           this.snackBar.open('Erro ao desativar usuário', 'Fechar', { duration: 3000 });
         }
@@ -122,7 +122,7 @@ export class UserListComponent implements OnInit {
             setTimeout(() => this.searchUsers(), 100);
           }
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Erro ao excluir usuário:', error);
           this.snackBar.open('Erro ao excluir usuário', 'Fechar', { duration: 3000 });
         }
@@ -136,5 +136,12 @@ export class UserListComponent implements OnInit {
 
   getStatusColor(active: boolean): string {
     return active ? 'primary' : 'warn';
+  }
+
+  getGearScoreColor(gearScore: number): string {
+    if (gearScore >= 850) return 'primary'; // Altíssimo
+    if (gearScore >= 830) return 'accent';  // Alto
+    if (gearScore >= 810) return 'basic';   // Médio
+    return 'warn';                          // Baixo
   }
 }

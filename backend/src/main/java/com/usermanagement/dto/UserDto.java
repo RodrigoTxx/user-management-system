@@ -9,20 +9,13 @@ public class UserDto {
     
     private Long id;
     
-    @NotBlank(message = "Nome de usuário é obrigatório")
-    @Size(min = 3, max = 50, message = "Nome de usuário deve ter entre 3 e 50 caracteres")
-    private String username;
+    @NotBlank(message = "Nome de família é obrigatório")
+    @Size(min = 3, max = 50, message = "Nome de família deve ter entre 3 e 50 caracteres")
+    private String username; // Nome de Família
     
-    @NotBlank(message = "Email é obrigatório")
-    @Email(message = "Email deve ter formato válido")
-    private String email;
-    
-    @NotBlank(message = "Nome completo é obrigatório")
-    @Size(max = 100, message = "Nome completo deve ter no máximo 100 caracteres")
-    private String fullName;
-    
-    @Size(max = 15, message = "Telefone deve ter no máximo 15 caracteres")
-    private String phone;
+    @NotBlank(message = "Nome do personagem é obrigatório")
+    @Size(min = 3, max = 50, message = "Nome do personagem deve ter entre 3 e 50 caracteres")
+    private String characterName;
     
     private Boolean active;
     
@@ -31,16 +24,30 @@ public class UserDto {
     
     private String profileName;
     
+    // Campos específicos do Black Desert Online
+    private Integer attackPower = 0; // AP
+    private Integer awakeningAttackPower = 0; // APP
+    private Integer defensePower = 0; // DP
+    private Integer gearScore = 0; // GS - calculado automaticamente
+    
+    @Size(max = 50, message = "Classe deve ter no máximo 50 caracteres")
+    private String characterClass;
+    
+    @Size(max = 20, message = "Tipo da classe deve ter no máximo 20 caracteres")
+    private String classType; // Awakening, Succession, Ascension
+    
     // Constructors
     public UserDto() {}
     
-    public UserDto(String username, String email, String fullName, String phone, Long profileId) {
+    public UserDto(String username, String characterName, Long profileId) {
         this.username = username;
-        this.email = email;
-        this.fullName = fullName;
-        this.phone = phone;
+        this.characterName = characterName;
         this.profileId = profileId;
         this.active = true;
+        this.attackPower = 0;
+        this.awakeningAttackPower = 0;
+        this.defensePower = 0;
+        this.gearScore = 0;
     }
     
     // Getters and Setters
@@ -60,29 +67,7 @@ public class UserDto {
         this.username = username;
     }
     
-    public String getEmail() {
-        return email;
-    }
-    
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    
-    public String getFullName() {
-        return fullName;
-    }
-    
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-    
-    public String getPhone() {
-        return phone;
-    }
-    
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+
     
     public Boolean getActive() {
         return active;
@@ -106,5 +91,73 @@ public class UserDto {
     
     public void setProfileName(String profileName) {
         this.profileName = profileName;
+    }
+    
+    public String getCharacterName() {
+        return characterName;
+    }
+    
+    public void setCharacterName(String characterName) {
+        this.characterName = characterName;
+    }
+    
+    public Integer getAttackPower() {
+        return attackPower;
+    }
+    
+    public void setAttackPower(Integer attackPower) {
+        this.attackPower = attackPower;
+        calculateGearScore();
+    }
+    
+    public Integer getAwakeningAttackPower() {
+        return awakeningAttackPower;
+    }
+    
+    public void setAwakeningAttackPower(Integer awakeningAttackPower) {
+        this.awakeningAttackPower = awakeningAttackPower;
+        calculateGearScore();
+    }
+    
+    public Integer getDefensePower() {
+        return defensePower;
+    }
+    
+    public void setDefensePower(Integer defensePower) {
+        this.defensePower = defensePower;
+        calculateGearScore();
+    }
+    
+    public Integer getGearScore() {
+        return gearScore;
+    }
+    
+    public void setGearScore(Integer gearScore) {
+        this.gearScore = gearScore;
+    }
+    
+    public String getCharacterClass() {
+        return characterClass;
+    }
+    
+    public void setCharacterClass(String characterClass) {
+        this.characterClass = characterClass;
+    }
+    
+    public String getClassType() {
+        return classType;
+    }
+    
+    public void setClassType(String classType) {
+        this.classType = classType;
+    }
+    
+    // Método para calcular automaticamente o Gear Score: (AP + APP/2) + DP
+    public void calculateGearScore() {
+        if (this.attackPower == null) this.attackPower = 0;
+        if (this.awakeningAttackPower == null) this.awakeningAttackPower = 0;
+        if (this.defensePower == null) this.defensePower = 0;
+        
+        this.gearScore = (this.attackPower + (this.awakeningAttackPower / 2)) + this.defensePower;
     }
 }

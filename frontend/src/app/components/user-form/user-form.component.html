@@ -20,62 +20,41 @@
       <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
         
         <div class="form-row">
-          <!-- Username -->
+          <!-- Nome de Família (Username) -->
           <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Nome de usuário</mat-label>
+            <mat-label>Nome de Família</mat-label>
             <input matInput 
                    formControlName="username" 
-                   placeholder="Digite o nome de usuário"
+                   placeholder="Digite o nome de família"
                    [readonly]="!canEditUsername()">
+            <mat-hint>Nome da família no jogo</mat-hint>
             <mat-error *ngIf="userForm.get('username')?.hasError('required')">
-              Nome de usuário é obrigatório
+              Nome de família é obrigatório
             </mat-error>
             <mat-error *ngIf="userForm.get('username')?.hasError('minlength')">
               Nome deve ter pelo menos 3 caracteres
             </mat-error>
           </mat-form-field>
 
-          <!-- Email -->
+
+
+          <!-- Character Name -->
           <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Email</mat-label>
+            <mat-label>Nome do Personagem</mat-label>
             <input matInput 
-                   type="email" 
-                   formControlName="email" 
-                   placeholder="usuario@exemplo.com">
-            <mat-error *ngIf="userForm.get('email')?.hasError('required')">
-              Email é obrigatório
+                   formControlName="characterName" 
+                   placeholder="Digite o nome do personagem">
+            <mat-hint>Nome do personagem principal</mat-hint>
+            <mat-error *ngIf="userForm.get('characterName')?.hasError('required')">
+              Nome do personagem é obrigatório
             </mat-error>
-            <mat-error *ngIf="userForm.get('email')?.hasError('email')">
-              Digite um email válido
+            <mat-error *ngIf="userForm.get('characterName')?.hasError('minlength')">
+              Nome deve ter pelo menos 3 caracteres
             </mat-error>
           </mat-form-field>
         </div>
 
         <div class="form-row">
-          <!-- Full Name -->
-          <mat-form-field appearance="outline" class="form-field full-width">
-            <mat-label>Nome completo</mat-label>
-            <input matInput 
-                   formControlName="fullName" 
-                   placeholder="Digite o nome completo">
-            <mat-error *ngIf="userForm.get('fullName')?.hasError('required')">
-              Nome completo é obrigatório
-            </mat-error>
-            <mat-error *ngIf="userForm.get('fullName')?.hasError('minlength')">
-              Nome deve ter pelo menos 2 caracteres
-            </mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="form-row">
-          <!-- Phone -->
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Telefone</mat-label>
-            <input matInput 
-                   formControlName="phone" 
-                   placeholder="(11) 99999-9999">
-          </mat-form-field>
-
           <!-- Profile (only for admin) -->
           <mat-form-field appearance="outline" class="form-field" *ngIf="canEditProfile()">
             <mat-label>Perfil</mat-label>
@@ -95,6 +74,87 @@
               Usuário ativo
             </mat-checkbox>
           </div>
+        </div>
+
+        <!-- Black Desert Online Section -->
+        <mat-divider class="section-divider"></mat-divider>
+        <h3 class="section-title">Informações do Black Desert Online</h3>
+
+        <div class="form-row">
+          <!-- Character Class -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Classe</mat-label>
+            <mat-select formControlName="characterClass" (selectionChange)="onClassChange($event.value)">
+              <mat-option *ngFor="let bdoClass of bdoClasses" [value]="bdoClass.name">
+                {{ bdoClass.name }}
+              </mat-option>
+            </mat-select>
+            <mat-hint>Classe do personagem principal</mat-hint>
+          </mat-form-field>
+
+          <!-- Class Type -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Tipo da Classe</mat-label>
+            <mat-select formControlName="classType" [disabled]="!getAvailableClassTypes().length">
+              <mat-option *ngFor="let type of getAvailableClassTypes()" [value]="type">
+                {{ type }}
+              </mat-option>
+            </mat-select>
+            <mat-hint>Awakening, Succession ou Ascension</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <!-- Attack Power (AP) -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Attack Power (AP)</mat-label>
+            <input matInput 
+                   type="number" 
+                   formControlName="attackPower" 
+                   placeholder="0"
+                   min="0" 
+                   max="500"
+                   (input)="onPowerChange()">
+            <mat-hint>Poder de ataque principal</mat-hint>
+          </mat-form-field>
+
+          <!-- Awakening Attack Power (APP) -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Awakening AP (APP)</mat-label>
+            <input matInput 
+                   type="number" 
+                   formControlName="awakeningAttackPower" 
+                   placeholder="0"
+                   min="0" 
+                   max="500"
+                   (input)="onPowerChange()">
+            <mat-hint>Poder de ataque do awakening/succession</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <!-- Defense Power (DP) -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Defense Power (DP)</mat-label>
+            <input matInput 
+                   type="number" 
+                   formControlName="defensePower" 
+                   placeholder="0"
+                   min="0" 
+                   max="500"
+                   (input)="onPowerChange()">
+            <mat-hint>Poder de defesa</mat-hint>
+          </mat-form-field>
+
+          <!-- Gear Score (GS) - Read Only -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Gear Score (GS)</mat-label>
+            <input matInput 
+                   type="number" 
+                   [value]="calculatedGearScore"
+                   readonly>
+            <mat-hint>Calculado automaticamente: (AP + APP/2) + DP</mat-hint>
+          </mat-form-field>
         </div>
 
         <!-- Password Section -->
