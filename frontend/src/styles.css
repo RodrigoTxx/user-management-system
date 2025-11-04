@@ -189,7 +189,7 @@ body {
 }
 
 .mat-card-subtitle {
-  color: #b0b0b0 !important;
+  color: #ffffff !important;
 }
 
 .mat-form-field-appearance-outline .mat-form-field-outline {
@@ -240,4 +240,62 @@ body {
   .form-actions button {
     width: 100%;
   }
+}
+
+/* Global Material Design Components - BDO Theme Overrides */
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input {
+    color: #e0e0e0 !important;
+    caret-color: #d4af37 !important;
+}
+
+.mat-mdc-text-field-wrapper.mdc-text-field--outlined .mat-mdc-form-field-infix {
+    color: #e0e0e0 !important;
+}
+
+.mat-mdc-select-value-text {
+    color: #e0e0e0 !important;
+}
+
+/* Form field labels */
+.mat-mdc-form-field .mat-mdc-floating-label {
+    color: #ccc !important;
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
+    color: #d4af37 !important;
+}
+
+/* Form field outlines */
+.mat-mdc-form-field .mdc-notched-outline__leading,
+.mat-mdc-form-field .mdc-notched-outline__notch,
+.mat-mdc-form-field .mdc-notched-outline__trailing {
+    border-color: #555 !important;
+}
+
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+    border-color: #d4af37 !important;
+    border-width: 2px !important;
+}
+
+/* Select arrow */
+.mat-mdc-select .mat-mdc-select-arrow {
+    color: #d4af37 !important;
+}
+
+/* Placeholder text */
+.mat-mdc-input-element::placeholder {
+    color: #999 !important;
+}
+
+/* Error states */
+.mat-mdc-form-field.mat-form-field-invalid .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-form-field-invalid .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-form-field-invalid .mdc-notched-outline__trailing {
+    border-color: #ff6b6b !important;
+}
+
+.mat-mdc-form-field-error {
+    color: #ff6b6b !important;
 }
