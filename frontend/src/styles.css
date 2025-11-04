@@ -188,8 +188,10 @@ body {
   color: #d4af37 !important;
 }
 
-.mat-card-subtitle {
-  color: #ffffff !important;
+.mat-card-subtitle,
+.mat-mdc-card-subtitle,
+.mdc-card__subtitle {
+  color: #e0e0e0 !important;
 }
 
 .mat-form-field-appearance-outline .mat-form-field-outline {
@@ -298,4 +300,25 @@ body {
 
 .mat-mdc-form-field-error {
     color: #ff6b6b !important;
+}
+
+/* Additional card subtitle fixes */
+.mat-card .mat-card-subtitle,
+.mat-mdc-card .mat-mdc-card-subtitle,
+.mdc-card .mdc-card__subtitle,
+mat-card-subtitle {
+    color: #e0e0e0 !important;
+}
+
+/* Ensure all text in cards is visible */
+.mat-card-content,
+.mat-mdc-card-content,
+.mdc-card__content {
+    color: #e0e0e0 !important;
+}
+
+/* Fix for any remaining black text in cards */
+.mat-card *:not(.mat-card-title):not(.mat-mdc-button):not(.mat-raised-button),
+.mat-mdc-card *:not(.mat-card-title):not(.mat-mdc-button):not(.mat-raised-button) {
+    color: #e0e0e0 !important;
 }
