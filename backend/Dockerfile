@@ -17,7 +17,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Estágio 2: Runtime
-FROM openjdk:8-jre-alpine
+FROM eclipse-temurin:8-jre-alpine
 
 # Definir diretório de trabalho
 WORKDIR /app
